@@ -1,0 +1,45 @@
+---
+title: "Amazon Books Analysis"
+author: "Haochong(Rogers) Yang"
+date: "04/08/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(openintro)
+library(tidyverse)
+library(VGAMdata)
+```
+
+**This file mainly examined books sold by Amazon, in which I queried some detail information, such as the minimum pages of book and summary tables.**
+
+The code below reads in data about books sold on Amazon (https://dasl.datadescription.com/datafile/amazon-books/).  The data frame containing the book data is named `books`. Note that the height (`Height`), width (`Width`) and thickness (`Thick`) of books in this data frame are measured in inches.
+
+```{r}
+books <- read.csv("amazonbooks.csv")
+```
+
+### What is the name of the book(s) with the smallest number of pages in this sample of books, and how many pages does it have?
+```{r}
+books %>% arrange(NumPages) %>% select(Title, NumPages) %>% head()
+```
+There are three books that have the same lowest number of pages, which is 24 pages. The names are "Big Dog . . . Little Dog", "The Berenstain Bears He Bear, She Bear", and "The Shape of Me and Other Stuff: Dr. Seuss's Surprising Word Book".
+
+
+### (b) I create a summary table which reports the total number of books written by each author and the mean and variance of the  number of pages per book for each author, for the books represented in this sample of books. 
+
+```{r}
+books %>% group_by(Author) %>% 
+  summarize(n = n(), 
+            mean_pages = mean(NumPages), 
+            var_pages = var(NumPages))
+```
+
+### (c) I created a new summary table based on the previous one which contains only information for authors who wrote more than 2 books, and sorted them in decreasing order of number of books written.
+```{r}
+books %>% group_by(Author) %>% 
+  summarize(n = n(), mean_pages = mean(NumPages), var_pages = var(NumPages)) %>% 
+  filter(n > 1) %>% arrange(desc(n))
+```
+
